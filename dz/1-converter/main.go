@@ -6,19 +6,16 @@ const USDtoEUR = 0.91
 const USDtoRUB = 84.28
 
 func main() {
-	fmt.Println(eurToRub(10))
+	sum := getSum()
+	fmt.Printf("Вы ввели %.2f EUR, это будет %.2f RUB\n", sum, eurToRub(sum))
 }
 func eurToRub(sum float32) float32 {
 	return sum / USDtoEUR * USDtoRUB
 }
 
-// Для начала работы с калькулятором, нам понадобится:
-// - Создать новый проект
-// - Объявить пакет main
-// - Объявить функцию main
-// - Создать константы конвертации
-// - Из USD в EUR
-// - Из USD в RUB
-// - Рассчитать EUR в RUB на основании первых двух
-// В git создать ветку: 1-start
-// Папка: 1-converter
+func getSum() float32 {
+	fmt.Println("Введите сумму в EUR:")
+	var sum float32
+	fmt.Scanln(&sum)
+	return sum
+}
