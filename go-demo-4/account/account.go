@@ -5,25 +5,22 @@ import (
 	"math/rand/v2"
 	"net/url"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 var letterRunes = []rune("qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890-*!")
 
 type Account struct {
-	login    string
-	password string
-	url      string
+	Login     string    `json:"login" xml:"test"`
+	Password  string    `json:"password"`
+	Url       string    `json:"url"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-type AccountWithTimeStamp struct {
-	createAt time.Time
-	updateAt time.Time
-	Account
-}
-
-func (acc Account) OutputPassword() {
-	// fmt.Println(acc)
-	// fmt.Println(acc.login, acc.password, acc.url)
+func (acc Account) Output() {
+	color.Cyan("login: " + acc.Login + ", password: " + acc.Password)
 }
 
 func (acc *Account) generatePassword(n int) {
@@ -31,9 +28,9 @@ func (acc *Account) generatePassword(n int) {
 	for i := range res {
 		res[i] = letterRunes[rand.IntN(len(letterRunes))]
 	}
-	acc.password = string(res)
+	acc.Password = string(res)
 }
-func NewAccountWithTimeStamp(login, password, urlString string) (*AccountWithTimeStamp, error) { // 9.10. Функция constructor
+func NewAccount(login, password, urlString string) (*Account, error) { // 9.10. Функция constructor
 	// Валидируем аккаунт
 	if login == "" {
 		return nil, errors.New("INVALID_LOGIN")
@@ -42,14 +39,12 @@ func NewAccountWithTimeStamp(login, password, urlString string) (*AccountWithTim
 	if err != nil {
 		return nil, errors.New("INVALID_URL")
 	}
-	newAcc := &AccountWithTimeStamp{
-		createAt: time.Now(),
-		updateAt: time.Now(),
-		Account: Account{
-			login:    login,
-			password: password,
-			url:      urlString,
-		},
+	newAcc := &Account{
+		Login:     login,
+		Password:  password,
+		Url:       urlString,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 	if password == "" {
 		newAcc.generatePassword(12)
