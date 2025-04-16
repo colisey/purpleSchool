@@ -16,22 +16,22 @@ func main() {
 		"quoted": {"котируемая", "котируемой", "котируемую"},
 	}
 	fmt.Println("Привет! Это конвертер валют.")
-	baseCurrency, baseErr := getCurrency(currencies, name["base"])
+	baseCurrency, baseErr := getCurrency(&currencies, name["base"])
 	if baseErr != nil {
 		fmt.Println(baseErr)
 		return
 	}
 	sum := getSumm()
 
-	filteredCurrency := getFilteredCurrencies(currencies, baseCurrency)
-	quotedCurrency, quotedErr := getCurrency(filteredCurrency, name["quoted"])
+	filteredCurrency := getFilteredCurrencies(&currencies, baseCurrency)
+	quotedCurrency, quotedErr := getCurrency(&filteredCurrency, name["quoted"])
 	if quotedErr != nil {
 		fmt.Println(quotedErr)
 		return
 	}
 	converter(baseCurrency, quotedCurrency, sum)
 }
-func getCurrency(currencies []string, print []string) (string, error) {
+func getCurrency(currencies *[]string, print []string) (string, error) {
 	var curr string
 	var error error = nil
 baseLoop:
@@ -71,10 +71,10 @@ baseLoop:
 	}
 	return sum
 }
-func getFilteredCurrencies(currencies []string, current string) []string {
+func getFilteredCurrencies(currencies *[]string, current string) []string {
 	var filteredCurrencies []string
 
-	for _, currency := range currencies {
+	for _, currency := range *currencies {
 		if currency != current {
 			filteredCurrencies = append(filteredCurrencies, currency)
 		}
@@ -114,11 +114,11 @@ func converter(baseCurrName string, quotedCurrName string, sum int) (float32, er
 	return convertedSum, nil
 }
 
-func scanCurrency(currencies []string) string {
+func scanCurrency(currencies *[]string) string {
 	var curr string
-	for index, currency := range currencies {
+	for index, currency := range *currencies {
 		separator := ", "
-		if (len(currencies) - 1) <= index {
+		if (len(*currencies) - 1) <= index {
 			separator = "\n"
 		}
 		fmt.Printf("%s%s", currency, separator)
@@ -126,8 +126,8 @@ func scanCurrency(currencies []string) string {
 	fmt.Scan(&curr)
 	return curr
 }
-func contains(s []string, e string) bool {
-	for _, a := range s {
+func contains(s *[]string, e string) bool {
+	for _, a := range *s {
 		if a == e {
 			return true
 		}
