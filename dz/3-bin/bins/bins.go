@@ -2,11 +2,7 @@ package bins
 
 import (
 	"encoding/json"
-	"errors"
-	"main/files"
 	"time"
-
-	"github.com/fatih/color"
 )
 
 type Bin struct {
@@ -31,20 +27,6 @@ func (binlist *BinList) ToBytes() ([]byte, error) {
 		return nil, err
 	}
 	return file, nil
-}
-func (binlist *BinList) save(name string) error {
-	isJSON := files.IsJSONFile(name) // - Проверка что это json расширение файла err
-	if !isJSON {
-		color.Red("Файл %s не является файлом *.json", name)
-		return errors.New("DONT_JSON")
-	}
-
-	data, err := binlist.ToBytes()
-	if err != nil {
-		color.Red("Не удалось преобразовать")
-	}
-	files.WriteFile(data, name)
-	return nil
 }
 
 func NewBin(id string, private bool, name string) Bin {
