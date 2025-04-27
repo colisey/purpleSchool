@@ -1,12 +1,9 @@
 package storage
 
 import (
-	"encoding/json"
 	"fmt"
 	"main/bins"
 	"main/files"
-	"main/utils"
-	"os"
 )
 
 // Однако, в пакете storage отсутствует работа с сущностями Bin и BinList,
@@ -19,22 +16,17 @@ import (
 // - Чтение списка bin в виде json из локального файла
 
 func WriteFile(binList *bins.BinList, name string) {
-	file, err := os.Create(name)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer file.Close()
-	var content []byte
-	isJSON := utils.IsJSONFile(name) // - Проверка что это json расширение файла err
-	if isJSON {
-		content, err = json.Marshal(binList)
-		// return binList, nil
-	}
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	_, err = file.Write(content)
+	// var content []byte
+	// var err error
+	// isJSON := utils.IsJSONFile(name) // - Проверка что это json расширение файла err
+	// if isJSON {
+	// 	content, err = json.Marshal(binList)
+	// 	if err != nil {
+	// 		fmt.Println(err)
+	// 		return
+	// 	}
+	// }
+	err := files.WriteFile(binList, name)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -48,10 +40,5 @@ func ReadFile(name string) (*bins.BinList, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-	isJSON := utils.IsJSONFile(name) // - Проверка что это json расширение файла err
-	if isJSON {
-		binList := bins.NewBinList(data)
-		return binList, nil
-	}
-	return nil, nil
+	return data, nil
 }

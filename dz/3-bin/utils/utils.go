@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"encoding/json"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -16,15 +15,33 @@ func GenerateProductID() string {
 func IsJSONFile(filename string) bool {
 	return strings.HasSuffix(filename, ".json")
 }
-func ConvertToBytes(binList any, name string) (*[]byte, error) {
-	var data []byte
-	var err error
-	isJSON := IsJSONFile(name) // - Проверка что это json расширение файла err
-	if isJSON {
-		data, err = json.Marshal(binList)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return &data, nil
-}
+
+//	func ConvertToBytes(binList any, name string) ([]byte, error) {
+//		var data []byte
+//		var err error
+//		isJSON := IsJSONFile(name) // - Проверка что это json расширение файла err
+//		if isJSON {
+//			data, err = json.Marshal(binList)
+//			if err != nil {
+//				return nil, err
+//			}
+//		} else {
+//			return nil, errors.New("Неверный формат файла")
+//		}
+//		return data, nil
+//	}
+// func ConvertToData(data []byte, name string) (*bins.BinList, error) {
+// 	var file bins.BinList
+// 	var err error
+// 	isJSON := IsJSONFile(name) // - Проверка что это json расширение файла err
+// 	if isJSON {
+// 		err = json.Unmarshal(data, &file)
+// 		if err != nil {
+// 			color.Red("Не удалось разобрать файл data.json")
+// 			return nil, err
+// 		}
+// 		return &file, nil
+// 	} else {
+// 		return nil, errors.New("Неверный формат файла")
+// 	}
+// }
