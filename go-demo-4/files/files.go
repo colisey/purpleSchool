@@ -1,28 +1,40 @@
 package files
 
 import (
-	"fmt"
+	"demo/password/output"
 	"os"
+
+	"github.com/fatih/color"
 )
 
-func ReadFile(name string) ([]byte, error) {
-	data, err := os.ReadFile(name)
+type JsonDb struct {
+	fileName string
+}
+
+func NewJsonDb(name string) *JsonDb {
+	return &JsonDb{
+		fileName: name,
+	}
+}
+
+func (db *JsonDb) Read() ([]byte, error) {
+	data, err := os.ReadFile(db.fileName)
 	if err != nil {
-		fmt.Println(err)
+		output.PrintError(err)
 		return nil, err
 	}
 	return data, nil
 }
-func WriteFile(content []byte, name string) {
-	file, err := os.Create(name)
+func (db *JsonDb) Write(content []byte) {
+	file, err := os.Create(db.fileName)
 	if err != nil {
-		fmt.Println(err)
+		output.PrintError(err)
 	}
 	defer file.Close()
 	_, err = file.Write(content)
 	if err != nil {
-		fmt.Println(err)
+		output.PrintError(err)
 		return
 	}
-	fmt.Println("Запись успешна")
+	color.Green("Запись успешна")
 }
