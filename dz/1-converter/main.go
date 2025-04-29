@@ -83,35 +83,46 @@ func getFilteredCurrencies(currencies *[]string, current string) []string {
 }
 
 func converter(baseCurrName string, quotedCurrName string, sum int) (float32, error) {
-	var convertedSum float32
+	// var convertedSum float32
 	var error error = nil
+	type ConvertMap map[string]float32
 
 	var EURtoRUB = math.Round((USDtoRUB/USDtoEUR)*100) / 100
 	convertTo := baseCurrName + "to" + quotedCurrName
 
-	switch convertTo {
-	case "USDtoRUB":
-		convertedSum = float32(sum) * USDtoRUB
-	case "RUBtoUSD":
-		convertedSum = float32(sum) / USDtoRUB
-	case "EURtoRUB":
-		convertedSum = float32(float64(sum) * EURtoRUB)
-	case "RUBtoEUR":
-		convertedSum = float32(float64(sum) / EURtoRUB)
-	case "EURtoUSD":
-		convertedSum = float32(sum) / USDtoEUR
-	case "USDtoEUR":
-		convertedSum = float32(sum) * USDtoEUR
-	default:
-		error = errors.New("Неизвестная базовая валюта")
+	convertMap := ConvertMap{
+		"USDtoRUB": float32(sum) * USDtoRUB,
+		"RUBtoUSD": float32(sum) / USDtoRUB,
+		"EURtoRUB": float32(float64(sum) * EURtoRUB),
+		"RUBtoEUR": float32(float64(sum) / EURtoRUB),
+		"EURtoUSD": float32(sum) / USDtoEUR,
+		"USDtoEUR": float32(sum) * USDtoEUR,
 	}
+	//TODO Как в мапу типизировать функцию? map{onSumm: sum => float32(sum) * USDtoRUB }
+
+	// switch convertTo {
+	// case "USDtoRUB":
+	// 	convertedSum = float32(sum) * USDtoRUB
+	// case "RUBtoUSD":
+	// 	convertedSum = float32(sum) / USDtoRUB
+	// case "EURtoRUB":
+	// 	convertedSum = float32(float64(sum) * EURtoRUB)
+	// case "RUBtoEUR":
+	// 	convertedSum = float32(float64(sum) / EURtoRUB)
+	// case "EURtoUSD":
+	// 	convertedSum = float32(sum) / USDtoEUR
+	// case "USDtoEUR":
+	// 	convertedSum = float32(sum) * USDtoEUR
+	// default:
+	// 	error = errors.New("Неизвестная базовая валюта")
+	// }
 
 	if error != nil {
 		return 0, error
 	}
 
-	fmt.Printf("Конвертированная сумма в валюте %s: %.2f\n", convertTo, convertedSum)
-	return convertedSum, nil
+	fmt.Printf("Конвертированная сумма в валюте %s: %.2f\n", convertTo, convertMap[convertTo])
+	return convertMap[convertTo], nil
 }
 
 func scanCurrency(currencies *[]string) string {
