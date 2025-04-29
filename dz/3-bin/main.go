@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	binlist, _ := storage.ReadFile("data.json")
+	binlist, _ := storage.Read("data.json")
 	if binlist != nil {
 		for _, bin := range binlist.Bins {
 			color.Green(bin.Name)
