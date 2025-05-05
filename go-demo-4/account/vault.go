@@ -1,11 +1,14 @@
 package account
 
 import (
+	"demo/password/encrypter"
 	"demo/password/output"
 	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 type ByteReader interface {
@@ -28,7 +31,8 @@ type Vault struct {
 
 type VaultWithDb struct {
 	Vault
-	db Db
+	db  Db
+	enc encrypter.Encrypter
 }
 
 func (vault *VaultWithDb) DeleteAccountByUrl(url string) int {
@@ -48,11 +52,12 @@ func (vault *VaultWithDb) DeleteAccountByUrl(url string) int {
 	vault.save()
 	return len(accounts)
 }
-func (vault *VaultWithDb) FindAccountsByURL(url string) []Account {
+func (vault *VaultWithDb) FindAccounts(url string, checker func(Account, string) bool) []Account {
 	var accounts []Account
 	for _, account := range vault.Accounts {
 
-		if strings.Contains(account.Url, url) {
+		// if strings.Contains(account.Url, url) {
+		if checker(account, url) {
 			accounts = append(accounts, account)
 		}
 	}
@@ -76,13 +81,14 @@ func (vault *VaultWithDb) save() {
 	vault.UpdatedAt = time.Now()
 	vault.Total = len(vault.Accounts)
 	data, err := vault.Vault.ToBytes()
+	encdata := vault.enc.Encriptt(data)
 	if err != nil {
 		output.PrintError("Не удалось преобразовать")
 	}
-	vault.db.Write(data)
+	vault.db.Write(encdata)
 }
 
-func NewVault(db Db) *VaultWithDb {
+func NewVault(db Db, enc encrypter.Encrypter) *VaultWithDb {
 	file, err := db.Read()
 	if err != nil {
 		return &VaultWithDb{
@@ -90,23 +96,28 @@ func NewVault(db Db) *VaultWithDb {
 				Accounts:  []Account{},
 				UpdatedAt: time.Now(),
 			},
-			db: db,
+			db:  db,
+			enc: enc,
 		}
 	}
+	data := enc.Decriptt(file)
 	var vault Vault
-	err = json.Unmarshal(file, &vault)
+	err = json.Unmarshal(data, &vault)
+	color.Cyan("Найденно %d аккаунтов", len(vault.Accounts))
 	if err != nil {
-		output.PrintError("Не удалось разобрать файл data.json")
+		output.PrintError("Не удалось разобрать файл data.vault")
 		return &VaultWithDb{
 			Vault: Vault{
 				Accounts:  []Account{},
 				UpdatedAt: time.Now(),
 			},
-			db: db,
+			db:  db,
+			enc: enc,
 		}
 	}
 	return &VaultWithDb{
 		Vault: vault,
 		db:    db,
+		enc:   enc,
 	}
 }
