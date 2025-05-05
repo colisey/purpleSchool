@@ -2,12 +2,15 @@ package main
 
 import (
 	"demo/password/account"
+	"demo/password/encrypter"
 	"demo/password/files"
 	"demo/password/output"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 )
 
 var menu = map[string]func(*account.VaultWithDb){
@@ -27,7 +30,20 @@ var menuVariants = []string{
 }
 
 func main() {
-	vault := account.NewVault(files.NewJsonDb("data.json"))
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	fmt.Println("___Менеджер паролей___")
+	// res := os.Getenv("VAR")
+	// fmt.Println(res)
+
+	// for _, e := range os.Environ() { // Вывод переменных env среды
+	// 	fmt.Println(e)
+	// }
+
+	vault := account.NewVault(files.NewJsonDb("data.vault"), *encrypter.NewEncrypter())
 	// vault := account.NewVault(cloud.NewCloudDB("https://a.ru"))
 Menu:
 	for {
