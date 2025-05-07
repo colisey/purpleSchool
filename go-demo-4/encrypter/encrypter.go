@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"fmt"
 	"io"
 	"os"
 
@@ -20,6 +21,12 @@ type Encrypter struct {
 }
 
 func NewEncrypter() *Encrypter {
+	defer func() { // Обработка паники, выведет текст 33 строки например
+		r := recover()
+		if r != nil {
+			fmt.Println("Recover ", r)
+		}
+	}()
 	key := os.Getenv("KEY")
 	// os.Setenv("MY_VAR", "value")
 	if key == "" {
