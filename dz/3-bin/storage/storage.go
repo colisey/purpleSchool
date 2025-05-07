@@ -15,7 +15,7 @@ import (
 // - Сохранение bin в виде json в локальном файле
 // - Чтение списка bin в виде json из локального файла
 
-func WriteFile(binList *bins.BinList, name string) {
+func Write(binList *bins.BinList, name string) {
 	// var content []byte
 	// var err error
 	// isJSON := utils.IsJSONFile(name) // - Проверка что это json расширение файла err
@@ -26,7 +26,7 @@ func WriteFile(binList *bins.BinList, name string) {
 	// 		return
 	// 	}
 	// }
-	err := files.WriteFile(binList, name)
+	err := files.Write(binList, name)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -34,8 +34,8 @@ func WriteFile(binList *bins.BinList, name string) {
 	fmt.Println("Запись успешна")
 }
 
-func ReadFile(name string) (*bins.BinList, error) {
-	data, err := files.ReadFile(name)
+func Read(name string) (*bins.BinList, error) {
+	data, err := files.Read(name)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err

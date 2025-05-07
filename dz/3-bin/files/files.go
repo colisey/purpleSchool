@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func ReadFile(name string) (*bins.BinList, error) { // - Чтение любого файла name
+func Read(name string) (*bins.BinList, error) { // - Чтение любого файла name
 	data, err := os.ReadFile(name)
 	if err != nil {
 		fmt.Println(err)
@@ -26,7 +26,7 @@ func ReadFile(name string) (*bins.BinList, error) { // - Чтение любог
 	return &binList, nil
 }
 
-func WriteFile(data *bins.BinList, name string) error {
+func Write(data *bins.BinList, name string) error {
 	file, err := os.Create(name)
 	if err != nil {
 		fmt.Println(err)
